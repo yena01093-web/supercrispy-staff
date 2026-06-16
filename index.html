@@ -376,7 +376,7 @@ const FIREBASE_CONFIG = {
   appId:             "1:633473709172:web:302ce3335dbe57f9e10d21"
 };
 
-const TAX_RATE  = 0.033;
+const TAX_RATE  = 0;
 const QR_PREFIX = "SCSTAFF:";
 
 // ================================================================
@@ -595,7 +595,7 @@ async function processCheckInOut(emp) {
       netPay
     });
     showScanResult("success", "👋", emp.name,
-      `퇴근 완료 · ${fmtTime(checkOutDate)}\n근무시간: ${fmtHours(workHours)}\n실수령: ${netPay.toLocaleString()}원`);
+      `퇴근 완료 · ${fmtTime(checkOutDate)}\n근무시간: ${fmtHours(workHours)}\n지급액: ${netPay.toLocaleString()}원`);
     toast(`${emp.name} 퇴근 체크아웃`);
   }
 }
@@ -677,7 +677,7 @@ async function renderDashboard() {
               ${r.workHours ? `<span>${fmtHours(r.workHours)}</span>` : ""}
             </div>
             ${r.netPay != null
-              ? `<div style="font-size:13px;color:var(--primary);font-weight:600;margin-top:4px">실수령 ${r.netPay.toLocaleString()}원</div>`
+              ? `<div style="font-size:13px;color:var(--primary);font-weight:600;margin-top:4px">지급액 ${r.netPay.toLocaleString()}원</div>`
               : ""}
           </div>`;
       }).join("");
@@ -748,7 +748,7 @@ async function loadPayroll() {
     <div class="month-total">
       <div class="mt-label">${year}년 ${month}월 총 급여</div>
       <div class="mt-amount">${grandNet.toLocaleString()}원</div>
-      <div class="mt-sub">세전 ${grandGross.toLocaleString()}원 · 3.3% 공제 후</div>
+      <div class="mt-sub">총 근무시간 기준 합산</div>
     </div>
     <div class="card">
       <div class="card-title">직원별 급여</div>
@@ -762,10 +762,9 @@ async function loadPayroll() {
           <div class="pay-item">근무일수: <b>${d.days}일</b></div>
           <div class="pay-item">총 시간: <b>${fmtHours(d.totalHours)}</b></div>
           <div class="pay-item">시급: <b>${(d.hourlyRate || 0).toLocaleString()}원</b></div>
-          <div class="pay-item">세전: <b>${d.totalGross.toLocaleString()}원</b></div>
-          <div class="pay-item">세금(3.3%): <b style="color:var(--danger)">-${d.totalTax.toLocaleString()}원</b></div>
+          <div class="pay-item">지급액: <b>${d.totalGross.toLocaleString()}원</b></div>
         </div>
-        <div class="pay-net">💵 실수령액: ${d.totalNet.toLocaleString()}원</div>
+        <div class="pay-net">💵 지급액: ${d.totalNet.toLocaleString()}원</div>
       </div>`;
   });
 
