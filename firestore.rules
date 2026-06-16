@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 직원 및 근태 기록: 인증 없이 읽기/쓰기 허용 (내부 키오스크 용도)
+    // 실서비스에서는 Firebase Authentication 연동 후 강화 권장
+    match /employees/{docId} {
+      allow read, write: if true;
+    }
+    match /attendance/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
