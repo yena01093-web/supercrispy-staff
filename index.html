@@ -443,8 +443,8 @@ function renderEmpList() {
         <div class="emp-rate">시급 ${e.hourlyRate.toLocaleString()}원</div>
       </div>
       <div class="emp-actions">
-        <button class="btn btn-outline btn-sm" onclick="openEdit('${e.id}')">수정</button>
-        <button class="btn btn-danger btn-sm" onclick="delEmployee('${e.id}','${e.name}')">삭제</button>
+        <button class="btn btn-outline btn-sm" data-id="${e.id}" onclick="openEdit(this.dataset.id)">수정</button>
+        <button class="btn btn-danger btn-sm" data-id="${e.id}" data-name="${e.name.replace(/"/g,'&quot;')}" onclick="delEmployee(this.dataset.id,this.dataset.name)">삭제</button>
       </div>
     </div>`).join("");
 }
@@ -492,10 +492,14 @@ async function saveEdit() {
 }
 async function delEmployee(id, name) {
   if (!confirm(`${name} 직원을 삭제하시겠습니까?\n(근무 기록은 유지됩니다)`)) return;
-  await db.collection("employees").doc(id).delete();
-  await refreshEmployees();
-  renderEmpList();
-  toast(`${name} 직원이 삭제되었습니다`);
+  try {
+    await db.collection("employees").doc(id).delete();
+    await refreshEmployees();
+    renderEmpList();
+    toast(`${name} 직원이 삭제되었습니다`);
+  } catch (e) {
+    toast("삭제 중 오류가 발생했습니다: " + e.message);
+  }
 }
 
 // ================================================================
